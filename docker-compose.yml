@@ -22,3 +22,11 @@ services:
       - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
+      - selenium
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    ports:
+      - 4444:4444
+    environment:
+      SE_OPTS: "--host selenium"
