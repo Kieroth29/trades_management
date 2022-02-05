@@ -1,7 +1,7 @@
 import random
 from .models import Trade
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium import webdriver
@@ -41,4 +41,29 @@ def stock_search(request):
                 trade.save()
         
     driver.quit()
-    return HttpResponse(status=200)
+    return redirect('trades:stored_stock_data')
+
+def stored_stock_data(request):
+    query = request.GET.get('query')
+    value = request.GET.get('value')
+    
+    all_trades = Trade.objects.all()
+    
+    if query is None:
+        trades = Trade.objects.all()
+    elif query == "price_gt":
+        trades = Trade.objects.filter(execution_price__gt=float(value))
+    elif query == "price_lt":
+        trades = Trade.objects.filter(execution_price__lt=float(value))
+    elif query == "price_mod_gt":
+        code = value.split(',')[0]
+        price = float(value.split(',')[1])
+        trades = Trade.objects.filter(code=code, execution_price__gt=price)
+    elif query == "price_mod_lt":
+        code = value.split(',')[0]
+        price = float(value.split(',')[1])
+        trades = Trade.objects.filter(code=code, execution_price__lt=price)
+    elif query == "stock":
+        trades = Trade.objects.filter(code=value)
+        
+    return render(request, 'stored_stock_data.html', locals())

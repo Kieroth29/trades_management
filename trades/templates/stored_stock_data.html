@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dados de ativos buscados</title>
+    <link rel="stylesheet" href="{% static 'css/stock_data.css' %}">
+</head>
+
+<body>
+    <div id="filter">
+        <label for="select-filter">Filtrar trades</label>
+        <select id="select-filter">
+            <option value="">Todos</option>
+            <option value="price_gt">Preço de execução maior que</option>
+            <option value="price_lt">Preço de execução menor que</option>
+            <option value="price_mod_gt">Preço de execução de ativo específico maior que</option>
+            <option value="price_mod_lt">Preço de execução de ativo específico menor que</option>
+        </select>
+
+        <fieldset id="fs-stocks">
+            <label for="select-stock">Ativos</label>
+            <select id="select-stock">
+                {% for trade in all_trades %}
+                <option value="{{trade.code}}">{{trade.code}}</option>
+                {% endfor %}
+            </select>
+        </fieldset>
+
+        <fieldset id="fs-value">
+            <label for="input-value">Valor</label>
+            <input type="number" id="input-value" min="0" value="0" step=".01" pattern="^\d*(\.\d{0,2})?$" >
+        </fieldset>
+
+        <button id="btn-filter">Filtrar</button>
+
+    </div>
+
+    <table id="stock-data">
+        <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Data e hora de execução</th>
+            <th>Preço de execução</th>
+        </tr>
+
+        {% for trade in trades %}
+        <tr>
+            <td>{{trade.id}}</td>
+            <td>{{trade.code}}</td>
+            <td>{{trade.execution_datetime}}</td>
+            <td>{{trade.execution_price|floatformat}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/stock_data.js' %}"></script>
+</body>
+
+</html>
