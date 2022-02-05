@@ -4,9 +4,15 @@ $('#select-filter').change(function(){
     filter = $(this).val();
 
     switch(filter){
+        case "stock":
+            $("#fs-stocks").show();
+        case "biggest_price":
+            $("#fs-stocks").show();
+            break
         case "price_gt":
         case "price_lt":
             $("#fs-value").show();
+            $("fieldset").hide();
             break
         case "price_mod_gt":
         case "price_mod_lt":
@@ -26,12 +32,14 @@ $('#btn-filter').click(function(){
 
         if(filter == "price_gt" || filter == "price_lt"){
             url.searchParams.append("value", $("#input-value").val());
+        }else if(filter == "biggest_price"){
+            url.searchParams.append("value", $("#select-stock").val());
+        }else if(filter == "stock"){
+            url.searchParams.append("value", $("#select-stock").val());
         }else{
-            url.searchParams.append("value", `${$("#select-stock").val()},${$('#input-value').val()}`)
+            url.searchParams.append("value", `${$("#select-stock").val()},${$('#input-value').val()}`);
         }
     }
-
-    console.log(url);
 
     window.location.href = url;
 });

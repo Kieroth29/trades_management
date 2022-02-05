@@ -2,6 +2,7 @@ import random
 from .models import Trade
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.db.models import Max
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium import webdriver
@@ -51,6 +52,10 @@ def stored_stock_data(request):
     
     if query is None:
         trades = Trade.objects.all()
+    elif query == "stock":
+        trades = Trade.objects.filter(code=value)
+    elif query == "biggest_price":
+        trades = Trade.objects.filter(execution_price=Trade.objects.filter(code=value).aggregate(Max('execution_price'))['execution_price__max'])
     elif query == "price_gt":
         trades = Trade.objects.filter(execution_price__gt=float(value))
     elif query == "price_lt":
